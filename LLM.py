@@ -22,7 +22,6 @@ import tiktoken
 encoding = tiktoken.get_encoding("o200k_base")
 tokenized_text = encoding.encode(text)
 tokenized_text = torch.tensor(tokenized_text,dtype=torch.long)
-# print("tokenized_text: ",tokenized_text)
 
 
 # split train_set and validation_set
@@ -33,14 +32,13 @@ validate_data = tokenized_text[train_index:]
 # hyperparameter
 context_length = 16 
 d_modal = 64
-bach_size = 4
+batch_size = 4
 
 # 训练数据中整批次整理好数据
 data = train_data
-idxs = torch.randint(low=0,high=len(data) - context_length,size=(bach_size,))
+idxs = torch.randint(low=0,high=len(data) - context_length,size=(batch_size,))
 x_batch = torch.stack([data[idx:idx + context_length] for idx in idxs])
 y_batch = torch.stack([data[idx+1:idx + context_length+1] for idx in idxs])
-print(x_batch)
 
 import pandas as pd
 # print(pd.DataFrame(x_batch[0].numpy()))
@@ -48,9 +46,19 @@ import pandas as pd
 # create Input Embedding Table
 max_token_value = tokenized_text.max().item()
 input_embedding_lookup_table = nn.Embedding(max_token_value+1,d_modal)
-print("input_embedding_lookup_table",input_embedding_lookup_table)
 x_batch_embedding = input_embedding_lookup_table(x_batch)
-y_batch_embedding = input_embedding_lookup_table(y_batch)
+y_batch_embedding = input_embedding_lookup_table(y_batch) # y_batch_embedding.shape = (4 * 16 * 64)
 
 # positional encoding
+import math
+positinal_encoding_lookup_table = torch.zeros(context_length,d_modal)
+position = torch.arange(0,context_length,dtype=torch.float).unsqueeze(1)
+div_item = torch.exp(torch.arange(0,d_modal,2).float() * (-math.log(10000.0) / d_modal))
+
+positinal_encoding_lookup_table[:,0::2] = torch.sin(position * div_item)
+positinal_encoding_lookup_table[:,1::2] = torch.cos(position * div_item)
+positinal_encoding_lookup_table = positinal_encoding_lookup_table.unsqueeze(0).expand(batch_size,-1,-1)
+
+x = x_batch_embedding + positinal_encoding_lookup_table
+y = y_batch_embedding + positinal_encoding_lookup_table
 
