@@ -14,4 +14,10 @@ if not os.path.exists("sales-textbooks.txt"):
 
 with open("sales-textbooks.txt","r") as f:
     text = f.read()
-    print("🚀 text:",text)
+    # print("🚀 text:",text)
+
+import tiktoken
+encoding = tiktoken.get_encoding("o200k_base")
+tokenized_text = encoding.encode(text)
+print("tokenized_text: ",tokenized_text)
+print(len(tokenized_text))
