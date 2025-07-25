@@ -28,3 +28,8 @@ tokenized_text = encoding.encode(text)
 train_index = int(len(tokenized_text) * 0.9)
 train_data = tokenized_text[:train_index]
 validate_data = tokenized_text[train_index:]
+
+# hyperparameter
+context_length = 16 
+d_modal = 64
+bach_size = 4
