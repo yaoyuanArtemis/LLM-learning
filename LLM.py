@@ -61,4 +61,6 @@ positinal_encoding_lookup_table = positinal_encoding_lookup_table.unsqueeze(0).e
 
 x = x_batch_embedding + positinal_encoding_lookup_table
 y = y_batch_embedding + positinal_encoding_lookup_table
+print(pd.DataFrame(x[0].detach().numpy()))
+
 
