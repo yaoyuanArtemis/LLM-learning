@@ -108,5 +108,21 @@ x = x + output
 
 # Layer Norm
 layer_norm = nn.LayerNorm(d_modal)
+layer_norm_output = layer_norm(output)
+
+# Feed Forward
+output = nn.Linear(d_modal,d_modal * 4)(layer_norm_output) # 放大维度
+output = nn.ReLU()(output)                      # 激活函数处理
+output = nn.Linear(d_modal * 4,d_modal)(output)
+
+# residual connection 残差连接
+output = output + layer_norm_output
+
+# Layer Norm
 output = layer_norm(output)
 
+
+
+# Linear Layer
+output = nn.Linear(d_modal,max_token_value+1)(output)
+print(output.shape)
