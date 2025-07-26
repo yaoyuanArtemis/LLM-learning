@@ -125,4 +125,7 @@ output = layer_norm(output)
 
 # Linear Layer
 output = nn.Linear(d_modal,max_token_value+1)(output)
-print(output.shape)
+print(output.shape) # torch.Size([4, 16, 199854])
+
+# Softmax
+logits = F.softmax(output,dim=-1)
