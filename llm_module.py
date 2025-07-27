@@ -234,10 +234,12 @@ with open("sales-textbooks.txt","r") as f:
     # print("🚀 text:",text)
 
 # Using TikToken (Same as GPT3) to tokenize the source text
-encoding = tiktoken.get_encoding("cl100k_base")
+encoding = tiktoken.get_encoding("o200k_base")
 tokenized_text = encoding.encode(text)
-max_token_value = max(tokenized_text) + 1  # the maximum value of the tokenized numbers
+# max_token_value = max(tokpip install numpyenized_text) + 1  # the maximum value of the tokenized numbers
 tokenized_text = torch.tensor(tokenized_text, dtype=torch.long, device=device)  # put tokenized text into tensor
+max_token_value = tokenized_text.max().item() + 1 # note!
+
 
 # Split train and validation
 split_idx = int(len(tokenized_text) * 0.9)
