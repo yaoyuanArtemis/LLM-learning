@@ -1,2 +1,19 @@
 data/
 !data/.gitkeep
+
+# 忽略所有以.pt结束的模型权重文件
+*.pt
+
+# 忽略所有以.bin结束的二进制模型文件
+*.bin
+
+# 忽略checkpoint检查点文件
+*.ckpt
+
+# 忽略存放模型权重的文件夹
+model/
+checkpoints/
+
+# 忽略日志文件和缓存文件
+*.log
+*.cache
